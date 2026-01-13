@@ -22,17 +22,17 @@ const App: React.FC = () => {
   const [winnerId, setWinnerId] = useState<string | null>(null);
   const [votedNumbers, setVotedNumbers] = useState<Set<string>>(new Set());
   const [votedNames, setVotedNames] = useState<Set<string>>(new Set());
-  const [hasVotedLocally, setHasVotedLocally] = useState<boolean>(false);
+  const [votedCandidateId, setVotedCandidateId] = useState<string | null>(null);
   
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // Check Local Storage for previous vote
+  // Check Local Storage for previous vote and candidate ID
   useEffect(() => {
     const localVote = localStorage.getItem(STORAGE_KEY);
-    if (localVote === 'true') {
-      setHasVotedLocally(true);
+    if (localVote) {
+      setVotedCandidateId(localVote);
     }
   }, []);
 
@@ -79,7 +79,6 @@ const App: React.FC = () => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
-        // Sort by timestamp descending
         setActivities(list.sort((a, b) => b.timestamp - a.timestamp));
       } else {
         setActivities([]);
@@ -118,7 +117,7 @@ const App: React.FC = () => {
 
   const handleVoteClick = (candidate: Candidate) => {
     if (votingStatus !== 'ongoing') return;
-    if (hasVotedLocally) {
+    if (votedCandidateId) {
       alert("Horay ayaad u codeysay!");
       return;
     }
@@ -130,32 +129,31 @@ const App: React.FC = () => {
     const phoneKey = whatsapp.replace(/\D/g, '');
     const normalizedName = name.toLowerCase().trim();
     
-    // Safety check again before DB operation
     if (votedNumbers.has(phoneKey) || votedNames.has(normalizedName)) {
       alert("Codkan waa la diiday: Magaca ama lambarka ayaa horay loo isticmaalay.");
       setIsVoteModalOpen(false);
       return;
     }
 
-    // Extract and format the actual first name
     const firstNameRaw = name.trim().split(/\s+/)[0];
     const formattedFirstName = firstNameRaw.charAt(0).toUpperCase() + firstNameRaw.slice(1).toLowerCase();
+    const candidateId = selectedCandidate?.id || 'unknown';
 
     const updates: any = {};
-    updates[`voters/${phoneKey}`] = { name, timestamp: Date.now(), candidateId: selectedCandidate?.id };
-    updates[`candidates/${selectedCandidate?.id}/votes`] = (selectedCandidate?.votes || 0) + 1;
+    updates[`voters/${phoneKey}`] = { name, timestamp: Date.now(), candidateId: candidateId };
+    updates[`candidates/${candidateId}/votes`] = (selectedCandidate?.votes || 0) + 1;
     
     const activityRef = push(ref(db, 'activities'));
     updates[`activities/${activityRef.key}`] = {
       id: activityRef.key,
-      userName: formattedFirstName, // Only actual first name
+      userName: formattedFirstName,
       candidateName: selectedCandidate?.name || 'Musharax',
       timestamp: Date.now()
     };
 
     update(ref(db), updates).then(() => {
-      localStorage.setItem(STORAGE_KEY, 'true');
-      setHasVotedLocally(true);
+      localStorage.setItem(STORAGE_KEY, candidateId);
+      setVotedCandidateId(candidateId);
       confetti({
         particleCount: 150,
         spread: 80,
@@ -224,8 +222,8 @@ const App: React.FC = () => {
                 key={candidate.id} 
                 candidate={candidate} 
                 onVote={handleVoteClick} 
-                disabled={votingStatus !== 'ongoing' || hasVotedLocally}
-                hasVoted={hasVotedLocally}
+                disabled={votingStatus !== 'ongoing' || !!votedCandidateId}
+                isVotedByMe={votedCandidateId === candidate.id}
               />
             ))}
           </div>
