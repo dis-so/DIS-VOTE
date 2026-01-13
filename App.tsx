@@ -16,7 +16,7 @@ const App: React.FC = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [votingStatus, setVotingStatus] = useState<VotingStatus>('upcoming');
-  const [manualTotal, setManualTotal] = useState<number>(0);
+  const [manualTotal, setManualTotal] = useState<number>(43);
   const [votedNumbers, setVotedNumbers] = useState<Set<string>>(new Set());
   
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
@@ -41,7 +41,7 @@ const App: React.FC = () => {
   useEffect(() => {
     // 1. Sync Candidates
     const candidatesRef = ref(db, 'candidates');
-    onValue(candidatesRef, (snapshot) => {
+    const unsubCandidates = onValue(candidatesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Candidate[];
@@ -53,7 +53,7 @@ const App: React.FC = () => {
 
     // 2. Sync Settings (Status & Manual Total)
     const settingsRef = ref(db, 'settings');
-    onValue(settingsRef, (snapshot) => {
+    const unsubSettings = onValue(settingsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         if (data.status) setVotingStatus(data.status);
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
     // 3. Sync Activities
     const activitiesRef = ref(db, 'activities');
-    onValue(activitiesRef, (snapshot) => {
+    const unsubActivities = onValue(activitiesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
     // 4. Sync Voted Numbers
     const votersRef = ref(db, 'voters');
-    onValue(votersRef, (snapshot) => {
+    const unsubVoters = onValue(votersRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setVotedNumbers(new Set(Object.keys(data)));
@@ -81,6 +81,13 @@ const App: React.FC = () => {
         setVotedNumbers(new Set());
       }
     });
+
+    return () => {
+      unsubCandidates();
+      unsubSettings();
+      unsubActivities();
+      unsubVoters();
+    };
   }, []);
 
   // Total votes = Manual base total + sum of candidate votes
@@ -127,7 +134,6 @@ const App: React.FC = () => {
 
   const closeAdmin = () => {
     setIsAdminOpen(false);
-    // Remove hash from URL without reloading
     window.history.pushState("", document.title, window.location.pathname + window.location.search);
   };
 
@@ -158,7 +164,7 @@ const App: React.FC = () => {
 
         {candidates.length === 0 ? (
           <div className="text-center py-24 opacity-30">
-            <p className="text-xl font-medium">Musharaxiin wali laguma soo darin.</p>
+            <p className="text-xl font-medium text-gray-400">Musharaxiin wali laguma soo darin.</p>
           </div>
         ) : (
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

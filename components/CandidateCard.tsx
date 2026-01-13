@@ -10,13 +10,22 @@ interface CandidateCardProps {
   disabled?: boolean;
 }
 
+const DEFAULT_AVATAR = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&skinColor=614335&topType=shortHair&hairColor=2c1b18";
+
 const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onVote, disabled = false }) => {
   return (
     <div className={`relative mt-12 mb-6 px-4 transition-opacity duration-300 ${disabled ? 'opacity-70' : ''}`}>
       <GlassContainer hoverEffect={!disabled} className="relative flex flex-col items-center text-center">
         {/* Floating Profile Image */}
         <div className={`absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-4 border-[#0f172a] shadow-[0_0_20px_rgba(0,242,255,0.3)] overflow-hidden transition-all ${disabled ? 'grayscale brightness-50' : ''}`}>
-          <img src={candidate.image} alt={candidate.name} className="w-full h-full object-cover" />
+          <img 
+            src={candidate.image || DEFAULT_AVATAR} 
+            alt={candidate.name} 
+            className="w-full h-full object-cover" 
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = DEFAULT_AVATAR;
+            }}
+          />
         </div>
         
         <div className="mt-12 w-full">
