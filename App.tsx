@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const [manualTotal, setManualTotal] = useState<number>(43);
   const [winnerId, setWinnerId] = useState<string | null>(null);
   const [votedNumbers, setVotedNumbers] = useState<Set<string>>(new Set());
+  const [votedNames, setVotedNames] = useState<Set<string>>(new Set());
   const [hasVotedLocally, setHasVotedLocally] = useState<boolean>(false);
   
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
@@ -78,7 +79,6 @@ const App: React.FC = () => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
-        // Sort by timestamp descending
         setActivities(list.sort((a, b) => b.timestamp - a.timestamp));
       } else {
         setActivities([]);
@@ -89,9 +89,19 @@ const App: React.FC = () => {
     const unsubVoters = onValue(votersRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
-        setVotedNumbers(new Set(Object.keys(data)));
+        const numbers = new Set<string>();
+        const names = new Set<string>();
+        Object.keys(data).forEach(key => {
+          numbers.add(key);
+          if (data[key].name) {
+            names.add(data[key].name.toLowerCase().trim());
+          }
+        });
+        setVotedNumbers(numbers);
+        setVotedNames(names);
       } else {
         setVotedNumbers(new Set());
+        setVotedNames(new Set());
       }
     });
 
@@ -117,9 +127,16 @@ const App: React.FC = () => {
 
   const handleVoteSubmit = useCallback((name: string, whatsapp: string) => {
     const phoneKey = whatsapp.replace(/\D/g, '');
+    const normalizedName = name.toLowerCase().trim();
     
     if (votedNumbers.has(phoneKey)) {
       alert("Nambarkan WhatsApp-ka ayaa horay u codeeyay!");
+      setIsVoteModalOpen(false);
+      return;
+    }
+
+    if (votedNames.has(normalizedName)) {
+      alert("Magacan ayaa horay loo isticmaalay codeyn kale!");
       setIsVoteModalOpen(false);
       return;
     }
@@ -149,7 +166,7 @@ const App: React.FC = () => {
     });
 
     setIsVoteModalOpen(false);
-  }, [selectedCandidate, votedNumbers]);
+  }, [selectedCandidate, votedNumbers, votedNames]);
 
   const closeAdmin = () => {
     setIsAdminOpen(false);
@@ -162,7 +179,6 @@ const App: React.FC = () => {
     <div className="min-h-screen">
       <div className="mesh-gradient" />
       
-      {/* Premium Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-white/5">
         <div className="absolute inset-0 glass opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between relative">
@@ -216,7 +232,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Updated Footer */}
         <footer className="mt-40 py-16 border-t border-white/5 text-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-[#00f2ff]/30 to-transparent"></div>
           
@@ -246,6 +261,8 @@ const App: React.FC = () => {
         candidate={selectedCandidate}
         onClose={() => setIsVoteModalOpen(false)}
         onSubmit={handleVoteSubmit}
+        votedNumbers={votedNumbers}
+        votedNames={votedNames}
       />
 
       <AdminPanel 
