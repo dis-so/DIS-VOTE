@@ -26,7 +26,7 @@ const App: React.FC = () => {
   // Secret Admin Access via Hash (#adminlp)
   useEffect(() => {
     const checkHash = () => {
-      if (window.location.hash === '#adminlp') {
+      if (window.location.hash.includes('#adminlp')) {
         setIsAdminOpen(true);
       }
     };

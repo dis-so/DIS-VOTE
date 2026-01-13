@@ -112,7 +112,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-        <GlassContainer className="w-full max-sm p-10 text-center border-[#00f2ff]/30">
+        <GlassContainer className="w-full max-w-sm p-10 text-center border-[#00f2ff]/30">
           <div className="w-16 h-16 rounded-2xl bg-[#00f2ff]/10 flex items-center justify-center mx-auto mb-6 text-[#00f2ff]">
             <Lock size={32} />
           </div>
