@@ -181,7 +181,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
             <GlassContainer className="space-y-6">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 <Hash className="text-[#00f2ff]" size={20} />
-                Tirada Guud ee la codeeyay
+                Tirada dadka codeeyay
               </h3>
               <form onSubmit={handleManualTotalChange} className="space-y-4">
                 <p className="text-xs text-gray-500 mb-2">Halkan waxaad ka bedeli kartaa tirada guud ee lagu soo bandhigayo bogga hore (Base Votes).</p>

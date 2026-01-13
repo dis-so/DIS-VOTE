@@ -85,7 +85,7 @@ const Hero: React.FC<HeroProps> = ({ totalVotes, status }) => {
       </p>
 
       <div className="relative inline-block px-12 py-8 glass rounded-3xl border-[#00f2ff]/20 shadow-[0_0_50px_rgba(0,242,255,0.1)]">
-        <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Tirada guud ee la codeeyay</p>
+        <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Tirada dadka codeeyay</p>
         <div className="text-6xl md:text-8xl font-black text-white neon-cyan tabular-nums tracking-tighter">
           {displayCount.toLocaleString()}
         </div>

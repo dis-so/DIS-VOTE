@@ -6,28 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIS-VOTE - Codkaagu waa Awooddaada</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-magenta: #ff00e5;
+            --deep-navy: #0f172a;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
+            background-color: var(--deep-navy);
             color: white;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        h1, h2, h3 {
+        h1, h2, h3, .heading-font {
             font-family: 'Montserrat', sans-serif;
+            letter-spacing: -0.02em;
         }
-        .neon-cyan {
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.3);
+        .neon-glow-cyan {
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15), 0 0 40px rgba(0, 242, 255, 0.1);
         }
-        .neon-magenta {
-            text-shadow: 0 0 10px rgba(255, 0, 229, 0.5), 0 0 20px rgba(255, 0, 229, 0.3);
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
         .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         .mesh-gradient {
             position: fixed;
@@ -38,35 +46,39 @@
             z-index: -1;
             background-color: #0f172a;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 242, 255, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(255, 0, 229, 0.15) 0px, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 50%);
-            animation: drift 20s ease infinite;
+                radial-gradient(at 0% 0%, rgba(0, 242, 255, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 0, 229, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 0, 229, 0.1) 0px, transparent 50%);
+            animation: drift 30s ease-in-out infinite alternate;
         }
         @keyframes drift {
-            0%, 100% { background-position: 0% 0%; }
-            50% { background-position: 10% 10%; }
+            0% { background-position: 0% 0%; }
+            100% { background-position: 5% 5%; }
+        }
+        .voting-btn-glow:hover {
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.4);
         }
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #0f172a;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 242, 255, 0.5);
+            background: var(--neon-cyan);
         }
     </style>
 <script type="importmap">
 {
   "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "canvas-confetti": "https://esm.sh/canvas-confetti@^1.9.4",
     "firebase/": "https://esm.sh/firebase@^12.7.0/",
