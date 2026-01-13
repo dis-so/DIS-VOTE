@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { VotingStatus, Candidate } from '../types';
 import { Trophy } from 'lucide-react';
@@ -71,42 +70,42 @@ const Hero: React.FC<HeroProps> = ({ totalVotes, status, winner }) => {
   const statusConfig = getStatusLabel();
 
   return (
-    <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-20">
-      <div className={`mb-10 px-8 py-3 rounded-full border glass flex items-center gap-3 transition-all duration-700 ${statusConfig.class}`}>
-        <span className="relative flex h-2.5 w-2.5">
+    <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-10 md:mb-20">
+      <div className={`mb-6 md:mb-10 px-6 md:px-8 py-2 md:py-3 rounded-full border glass flex items-center gap-2 md:gap-3 transition-all duration-700 ${statusConfig.class}`}>
+        <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
           {status === 'ongoing' && (
             <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusConfig.dot}`}></span>
           )}
-          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusConfig.dot}`}></span>
+          <span className={`relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 ${statusConfig.dot}`}></span>
         </span>
-        <span className="text-[11px] font-black tracking-[0.3em] uppercase">{statusConfig.text}</span>
+        <span className="text-[9px] md:text-[11px] font-black tracking-[0.3em] uppercase">{statusConfig.text}</span>
       </div>
 
-      <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tight leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <h1 className="text-4xl md:text-8xl font-black mb-4 md:mb-6 tracking-tight leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-1000">
         Codkaagu waa <span className="bg-gradient-to-r from-[#00f2ff] via-[#9d4edd] to-[#ff00e5] bg-clip-text text-transparent">Awooddaada</span>
       </h1>
       
-      <p className="text-gray-400 text-lg md:text-xl font-medium max-w-xl mb-14 opacity-80 leading-relaxed">
+      <p className="text-gray-400 text-base md:text-xl font-medium max-w-xl mb-10 md:mb-14 opacity-80 leading-relaxed px-4">
         Si hufan oo casri ah ugu codeey musharaxa aad ku kalsoon tay.
       </p>
 
       {/* Winner Announcement if exists */}
       {winner && (
-        <div className="w-full max-w-2xl mb-16 animate-in fade-in slide-in-from-top-4 duration-1000">
-          <div className="relative glass border-[#ff00e5]/30 p-8 rounded-[2.5rem] overflow-hidden group">
+        <div className="w-full max-w-2xl mb-12 md:mb-16 animate-in fade-in slide-in-from-top-4 duration-1000 px-2">
+          <div className="relative glass border-[#ff00e5]/30 p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden group">
             <div className="absolute -inset-1 bg-gradient-to-r from-[#ff00e5]/20 to-[#00f2ff]/20 blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
-            <div className="relative flex flex-col md:flex-row items-center gap-8">
+            <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
               <div className="relative">
                 <div className="absolute -inset-2 bg-[#ff00e5] rounded-full blur-sm opacity-30 animate-pulse"></div>
-                <img src={winner.image} alt={winner.name} className="relative w-32 h-32 rounded-full border-4 border-[#ff00e5] object-cover shadow-2xl" />
-                <div className="absolute -bottom-2 -right-2 bg-[#ff00e5] text-white p-2 rounded-full shadow-lg">
-                  <Trophy size={20} fill="currentColor" />
+                <img src={winner.image} alt={winner.name} className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#ff00e5] object-cover shadow-2xl" />
+                <div className="absolute -bottom-1 -right-1 bg-[#ff00e5] text-white p-1.5 md:p-2 rounded-full shadow-lg">
+                  <Trophy size={16} fill="currentColor" className="md:w-5 md:h-5" />
                 </div>
               </div>
-              <div className="text-left flex-1">
-                <div className="text-[10px] font-black text-[#ff00e5] uppercase tracking-[0.4em] mb-2">GUULAYSTAHA RASMIGA AH</div>
-                <h2 className="text-4xl font-black text-white mb-2 tracking-tight">{winner.name}</h2>
-                <p className="text-gray-400 text-sm font-medium leading-relaxed opacity-80">{winner.bio}</p>
+              <div className="text-center md:text-left flex-1">
+                <div className="text-[9px] font-black text-[#ff00e5] uppercase tracking-[0.4em] mb-1 md:mb-2">GUULAYSTAHA RASMIGA AH</div>
+                <h2 className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2 tracking-tight">{winner.name}</h2>
+                <p className="text-gray-400 text-xs md:text-sm font-medium leading-relaxed opacity-80">{winner.bio}</p>
               </div>
             </div>
           </div>
@@ -114,32 +113,32 @@ const Hero: React.FC<HeroProps> = ({ totalVotes, status, winner }) => {
       )}
 
       {/* Redesigned Voting Counter Card */}
-      <div className="relative w-full max-w-lg mx-auto">
+      <div className="relative w-full max-w-lg mx-auto px-4">
         <div className="absolute -inset-4 bg-gradient-to-r from-[#00f2ff]/10 to-[#ff00e5]/10 blur-2xl rounded-full opacity-50"></div>
-        <div className="relative flex flex-col items-center justify-center pt-8 pb-10 px-6 glass border-white/5 rounded-[3rem] overflow-hidden shadow-2xl">
+        <div className="relative flex flex-col items-center justify-center pt-6 pb-8 md:pt-8 md:pb-10 px-4 md:px-6 glass border-white/5 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl">
           {/* Decorative Corner Accents */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00f2ff]/30 rounded-tl-[3rem]"></div>
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#ff00e5]/30 rounded-tr-[3rem]"></div>
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#ff00e5]/30 rounded-bl-[3rem]"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00f2ff]/30 rounded-br-[3rem]"></div>
+          <div className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-2 border-l-2 border-[#00f2ff]/30 rounded-tl-[2rem] md:rounded-tl-[3rem]"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-2 border-r-2 border-[#ff00e5]/30 rounded-tr-[2rem] md:rounded-tr-[3rem]"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-2 border-l-2 border-[#ff00e5]/30 rounded-bl-[2rem] md:rounded-bl-[3rem]"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-2 border-r-2 border-[#00f2ff]/30 rounded-br-[2rem] md:rounded-br-[3rem]"></div>
 
           <div className="flex flex-col items-center">
-            <div className="flex items-center gap-3 mb-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse"></span>
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Live Pulse Data</span>
+            <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-4 px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-white/5 border border-white/10">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-[#00f2ff] animate-pulse"></span>
+              <span className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] md:tracking-[0.3em]">Live Pulse Data</span>
             </div>
             
             <div className="relative flex flex-col items-center">
-              <span className="text-[11px] font-black text-gray-500 uppercase tracking-[0.5em] mb-1 opacity-60">Tirada dadka codeeyay</span>
-              <div className="text-8xl md:text-[10rem] font-black text-white tabular-nums tracking-tighter leading-none neon-text-cyan transition-all duration-300">
+              <span className="text-[9px] md:text-[11px] font-black text-gray-500 uppercase tracking-[0.3em] md:tracking-[0.5em] mb-1 opacity-60">Tirada dadka codeeyay</span>
+              <div className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black text-white tabular-nums tracking-tighter leading-none neon-text-cyan transition-all duration-300">
                 {displayCount.toLocaleString()}
               </div>
             </div>
 
-            <div className="mt-6 flex items-center gap-4">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#00f2ff]/40"></div>
-              <span className="text-[9px] font-bold text-[#00f2ff] uppercase tracking-[0.2em] neon-text-cyan">LIVE</span>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#00f2ff]/40"></div>
+            <div className="mt-4 md:mt-6 flex items-center gap-3 md:gap-4">
+              <div className="h-px w-8 md:w-12 bg-gradient-to-r from-transparent to-[#00f2ff]/40"></div>
+              <span className="text-[8px] md:text-[9px] font-bold text-[#00f2ff] uppercase tracking-[0.2em] neon-text-cyan">LIVE</span>
+              <div className="h-px w-8 md:w-12 bg-gradient-to-l from-transparent to-[#00f2ff]/40"></div>
             </div>
           </div>
         </div>
