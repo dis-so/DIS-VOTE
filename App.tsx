@@ -12,22 +12,33 @@ import AdminPanel from './components/AdminPanel';
 import { MessageCircle, ShieldCheck } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+const STORAGE_KEY = 'dis_vote_status_v1';
+
 const App: React.FC = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [votingStatus, setVotingStatus] = useState<VotingStatus>('upcoming');
   const [manualTotal, setManualTotal] = useState<number>(43);
   const [votedNumbers, setVotedNumbers] = useState<Set<string>>(new Set());
+  const [hasVotedLocally, setHasVotedLocally] = useState<boolean>(false);
   
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
+  // Check Local Storage for previous vote
+  useEffect(() => {
+    const localVote = localStorage.getItem(STORAGE_KEY);
+    if (localVote === 'true') {
+      setHasVotedLocally(true);
+    }
+  }, []);
+
   // Secret Admin Access via Hash (#adminlp or #/adminlp)
   useEffect(() => {
     const checkHash = () => {
-      // Robust check for 'adminlp' in the hash to handle both #adminlp and #/adminlp
-      if (window.location.hash.toLowerCase().includes('adminlp')) {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes('adminlp')) {
         setIsAdminOpen(true);
       }
     };
@@ -91,6 +102,10 @@ const App: React.FC = () => {
 
   const handleVoteClick = (candidate: Candidate) => {
     if (votingStatus !== 'ongoing') return;
+    if (hasVotedLocally) {
+      alert("Horay ayaad u codeysay!");
+      return;
+    }
     setSelectedCandidate(candidate);
     setIsVoteModalOpen(true);
   };
@@ -117,6 +132,8 @@ const App: React.FC = () => {
     };
 
     update(ref(db), updates).then(() => {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      setHasVotedLocally(true);
       confetti({
         particleCount: 150,
         spread: 80,
@@ -131,7 +148,6 @@ const App: React.FC = () => {
 
   const closeAdmin = () => {
     setIsAdminOpen(false);
-    // Clear hash without reload
     window.history.pushState("", document.title, window.location.pathname + window.location.search);
   };
 
@@ -175,7 +191,8 @@ const App: React.FC = () => {
                 key={candidate.id} 
                 candidate={candidate} 
                 onVote={handleVoteClick} 
-                disabled={votingStatus !== 'ongoing'}
+                disabled={votingStatus !== 'ongoing' || hasVotedLocally}
+                hasVoted={hasVotedLocally}
               />
             ))}
           </div>
@@ -188,23 +205,12 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Beautiful Somali Footer */}
-        <footer className="mt-40 py-20 border-t border-white/5 text-center relative overflow-hidden">
+        {/* Updated Footer */}
+        <footer className="mt-40 py-16 border-t border-white/5 text-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-[#00f2ff]/30 to-transparent"></div>
           
-          <div className="mb-12">
-             <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-                <div className="w-2 h-2 rounded-full bg-[#00f2ff] animate-pulse"></div>
-             </div>
-             <p className="text-2xl font-black text-white mb-3 italic tracking-tight">PulseVote</p>
-             <p className="text-gray-500 font-medium opacity-80 max-w-lg mx-auto leading-relaxed">
-               U codeey musharaxa aad jeceshahay si hufan oo caddaalad ah. 
-               PulseVote waa nidaamka ugu casrisan ee codeynta online-ka ah.
-             </p>
-          </div>
-
-          <div className="flex flex-col items-center gap-8 mb-12">
-            <div className="flex justify-center gap-6">
+          <div className="flex flex-col items-center gap-8">
+            <div className="flex justify-center">
               <a 
                 href="https://chat.whatsapp.com/LiaSFkYmhIzBXsZgdOxxCE" 
                 target="_blank" 
@@ -214,20 +220,12 @@ const App: React.FC = () => {
                 <MessageCircle size={32} fill="currentColor" fillOpacity={0.1} className="group-hover:rotate-12 transition-transform" />
               </a>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">
-              <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
-              <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
-              <span className="hover:text-white cursor-pointer transition-colors">Hufnaan Data</span>
+            
+            <div className="text-center">
+              <p className="text-[12px] uppercase tracking-[0.3em] font-black text-gray-400">
+                DIS-voting © 2026 | by <span className="text-white">LP.</span>
+              </p>
             </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-[11px] uppercase tracking-[0.5em] font-black text-gray-600 mb-2">
-              DIS VOTING © 2026
-            </p>
-            <p className="text-[10px] text-gray-700 font-bold uppercase tracking-[0.2em]">
-              Designed with precision by <span className="text-white">LP.</span>
-            </p>
           </div>
         </footer>
       </main>

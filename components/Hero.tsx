@@ -15,83 +15,109 @@ const Hero: React.FC<HeroProps> = ({ totalVotes, status }) => {
     const end = totalVotes;
     if (start === end) return;
 
-    const duration = 1000;
-    const increment = (end - start) / (duration / 16);
+    const duration = 1500; 
+    const startTime = performance.now();
 
-    const counter = setInterval(() => {
-      start += increment;
-      if ((increment > 0 && start >= end) || (increment < 0 && start <= end)) {
-        setDisplayCount(end);
-        clearInterval(counter);
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      const currentCount = Math.floor(start + (end - start) * easeProgress);
+      setDisplayCount(currentCount);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
       } else {
-        setDisplayCount(Math.floor(start));
+        setDisplayCount(end);
       }
-    }, 16);
+    };
 
-    return () => clearInterval(counter);
+    requestAnimationFrame(animate);
   }, [totalVotes]);
 
-  const getStatusConfig = () => {
+  const getStatusLabel = () => {
     switch (status) {
       case 'ongoing':
         return {
           text: 'WEEY SOCOTAA CODEYNTA',
-          color: 'text-[#00f2ff] border-[#00f2ff]/60 bg-[#00f2ff]/5',
-          animate: 'animate-pulse'
+          class: 'text-[#00f2ff] border-[#00f2ff]/30 bg-[#00f2ff]/5',
+          dot: 'bg-[#00f2ff]'
         };
       case 'upcoming':
         return {
-          text: 'Wali ma bilaaban',
-          color: 'text-yellow-400 border-yellow-400/60 bg-yellow-400/5',
-          animate: ''
+          text: 'WALI MA BILAABAN',
+          class: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/5',
+          dot: 'bg-yellow-400'
         };
       case 'ended':
         return {
-          text: 'Wuu dhamaaday',
-          color: 'text-red-500 border-red-500/60 bg-red-500/5',
-          animate: ''
+          text: 'WUU DHAMAADAY',
+          class: 'text-red-500 border-red-500/30 bg-red-500/5',
+          dot: 'bg-red-500'
         };
       default:
         return {
-          text: 'WEEY SOCOTAA CODEYNTA',
-          color: 'text-[#00f2ff] border-[#00f2ff]/60 bg-[#00f2ff]/5',
-          animate: 'animate-pulse'
+          text: 'XALADDA LAMA YAQAAN',
+          class: 'text-gray-400 border-gray-400/30 bg-gray-400/5',
+          dot: 'bg-gray-400'
         };
     }
   };
 
-  const statusConfig = getStatusConfig();
+  const statusConfig = getStatusLabel();
 
   return (
-    <div className="text-center">
-      {/* Refined Status Banner inspired by user image */}
-      <div className="flex justify-center mb-8">
-        <div className={`px-10 py-3 rounded-full border glass font-black text-sm tracking-[0.2em] uppercase transition-all duration-500 flex items-center justify-center gap-3 ${statusConfig.color} ${statusConfig.animate}`}>
+    <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-20">
+      <div className={`mb-10 px-8 py-3 rounded-full border glass flex items-center gap-3 transition-all duration-700 ${statusConfig.class}`}>
+        <span className="relative flex h-2.5 w-2.5">
           {status === 'ongoing' && (
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
-            </span>
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusConfig.dot}`}></span>
           )}
-          {statusConfig.text}
-        </div>
+          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusConfig.dot}`}></span>
+        </span>
+        <span className="text-[11px] font-black tracking-[0.3em] uppercase">{statusConfig.text}</span>
       </div>
 
-      <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-        Codkaagu waa <span className="bg-gradient-to-r from-[#00f2ff] to-[#ff00e5] bg-clip-text text-transparent">Awooddaada</span>
+      <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tight leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        Codkaagu waa <span className="bg-gradient-to-r from-[#00f2ff] via-[#9d4edd] to-[#ff00e5] bg-clip-text text-transparent">Awooddaada</span>
       </h1>
-      <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">
+      
+      <p className="text-gray-400 text-lg md:text-xl font-medium max-w-xl mb-14 opacity-80 leading-relaxed">
         Si hufan oo casri ah ugu codeey musharaxa aad ku kalsoon tay.
       </p>
 
-      <div className="relative inline-block px-12 py-8 glass rounded-3xl border-[#00f2ff]/20 shadow-[0_0_50px_rgba(0,242,255,0.1)]">
-        <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Tirada dadka codeeyay</p>
-        <div className="text-6xl md:text-8xl font-black text-white neon-cyan tabular-nums tracking-tighter">
-          {displayCount.toLocaleString()}
+      {/* Redesigned Voting Counter Card */}
+      <div className="relative w-full max-w-lg mx-auto">
+        <div className="absolute -inset-4 bg-gradient-to-r from-[#00f2ff]/10 to-[#ff00e5]/10 blur-2xl rounded-full opacity-50"></div>
+        <div className="relative flex flex-col items-center justify-center pt-8 pb-10 px-6 glass border-white/5 rounded-[3rem] overflow-hidden shadow-2xl">
+          {/* Decorative Corner Accents */}
+          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00f2ff]/30 rounded-tl-[3rem]"></div>
+          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#ff00e5]/30 rounded-tr-[3rem]"></div>
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#ff00e5]/30 rounded-bl-[3rem]"></div>
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00f2ff]/30 rounded-br-[3rem]"></div>
+
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-3 mb-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse"></span>
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Live Pulse Data</span>
+            </div>
+            
+            <div className="relative flex flex-col items-center">
+              <span className="text-[11px] font-black text-gray-500 uppercase tracking-[0.5em] mb-1 opacity-60">Tirada dadka codeeyay</span>
+              <div className="text-8xl md:text-[10rem] font-black text-white tabular-nums tracking-tighter leading-none neon-text-cyan transition-all duration-300">
+                {displayCount.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center gap-4">
+              <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#00f2ff]/40"></div>
+              <span className="text-[9px] font-bold text-[#00f2ff] uppercase tracking-[0.2em] neon-text-cyan">LIVE</span>
+              <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#00f2ff]/40"></div>
+            </div>
+          </div>
         </div>
-        {status === 'ongoing' && (
-          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#ff00e5] shadow-[0_0_15px_rgba(255,0,229,0.8)] animate-ping" />
-        )}
       </div>
     </div>
   );
