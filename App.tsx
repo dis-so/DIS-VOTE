@@ -183,7 +183,13 @@ const App: React.FC = () => {
         <div className="absolute inset-0 glass opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between relative">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f2ff] to-[#ff00e5] flex items-center justify-center font-black text-[#0f172a] shadow-lg">D</div>
+            <div className="w-12 h-12 rounded-full overflow-hidden border border-white/20 bg-white/5 shadow-xl flex items-center justify-center">
+              <img 
+                src="https://files.catbox.moe/718riq.jpg" 
+                alt="DIS Logo" 
+                className="w-full h-full object-cover"
+              />
+            </div>
             <span className="font-black text-2xl tracking-tighter uppercase italic text-white flex items-center">
               DIS-<span className="text-[#00f2ff]">VOTE</span>
             </span>
