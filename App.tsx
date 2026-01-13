@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [votingStatus, setVotingStatus] = useState<VotingStatus>('upcoming');
   const [manualTotal, setManualTotal] = useState<number>(43);
+  const [winnerId, setWinnerId] = useState<string | null>(null);
   const [votedNumbers, setVotedNumbers] = useState<Set<string>>(new Set());
   const [hasVotedLocally, setHasVotedLocally] = useState<boolean>(false);
   
@@ -68,6 +69,7 @@ const App: React.FC = () => {
       if (data) {
         if (data.status) setVotingStatus(data.status);
         if (data.manualTotal !== undefined) setManualTotal(data.manualTotal);
+        if (data.winnerId !== undefined) setWinnerId(data.winnerId);
       }
     });
 
@@ -76,7 +78,10 @@ const App: React.FC = () => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
-        setActivities(list.sort((a, b) => b.timestamp - a.timestamp).slice(0, 20));
+        // Sort by timestamp descending
+        setActivities(list.sort((a, b) => b.timestamp - a.timestamp));
+      } else {
+        setActivities([]);
       }
     });
 
@@ -151,6 +156,8 @@ const App: React.FC = () => {
     window.history.pushState("", document.title, window.location.pathname + window.location.search);
   };
 
+  const winnerCandidate = candidates.find(c => c.id === winnerId);
+
   return (
     <div className="min-h-screen">
       <div className="mesh-gradient" />
@@ -178,7 +185,11 @@ const App: React.FC = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 pt-44 pb-32">
-        <Hero totalVotes={totalVotes} status={votingStatus} />
+        <Hero 
+          totalVotes={totalVotes} 
+          status={votingStatus} 
+          winner={winnerCandidate} 
+        />
 
         {candidates.length === 0 ? (
           <div className="text-center py-32 opacity-20">
@@ -242,6 +253,7 @@ const App: React.FC = () => {
         onClose={closeAdmin}
         candidates={candidates}
         currentStatus={votingStatus}
+        winnerId={winnerId || ''}
       />
 
       <ActivityTicker activities={activities} />

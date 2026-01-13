@@ -1,13 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { VotingStatus } from '../types';
+import { VotingStatus, Candidate } from '../types';
+import { Trophy } from 'lucide-react';
 
 interface HeroProps {
   totalVotes: number;
   status: VotingStatus;
+  winner?: Candidate;
 }
 
-const Hero: React.FC<HeroProps> = ({ totalVotes, status }) => {
+const Hero: React.FC<HeroProps> = ({ totalVotes, status, winner }) => {
   const [displayCount, setDisplayCount] = useState(0);
 
   useEffect(() => {
@@ -87,6 +89,29 @@ const Hero: React.FC<HeroProps> = ({ totalVotes, status }) => {
       <p className="text-gray-400 text-lg md:text-xl font-medium max-w-xl mb-14 opacity-80 leading-relaxed">
         Si hufan oo casri ah ugu codeey musharaxa aad ku kalsoon tay.
       </p>
+
+      {/* Winner Announcement if exists */}
+      {winner && (
+        <div className="w-full max-w-2xl mb-16 animate-in fade-in slide-in-from-top-4 duration-1000">
+          <div className="relative glass border-[#ff00e5]/30 p-8 rounded-[2.5rem] overflow-hidden group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#ff00e5]/20 to-[#00f2ff]/20 blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
+            <div className="relative flex flex-col md:flex-row items-center gap-8">
+              <div className="relative">
+                <div className="absolute -inset-2 bg-[#ff00e5] rounded-full blur-sm opacity-30 animate-pulse"></div>
+                <img src={winner.image} alt={winner.name} className="relative w-32 h-32 rounded-full border-4 border-[#ff00e5] object-cover shadow-2xl" />
+                <div className="absolute -bottom-2 -right-2 bg-[#ff00e5] text-white p-2 rounded-full shadow-lg">
+                  <Trophy size={20} fill="currentColor" />
+                </div>
+              </div>
+              <div className="text-left flex-1">
+                <div className="text-[10px] font-black text-[#ff00e5] uppercase tracking-[0.4em] mb-2">GUULAYSTAHA RASMIGA AH</div>
+                <h2 className="text-4xl font-black text-white mb-2 tracking-tight">{winner.name}</h2>
+                <p className="text-gray-400 text-sm font-medium leading-relaxed opacity-80">{winner.bio}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Redesigned Voting Counter Card */}
       <div className="relative w-full max-w-lg mx-auto">

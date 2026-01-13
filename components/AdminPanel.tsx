@@ -3,18 +3,19 @@ import React, { useState, useEffect } from 'react';
 import { db, ref, set, push, update, remove, onValue } from '../firebase';
 import { Candidate, VotingStatus } from '../types';
 import GlassContainer from './GlassContainer';
-import { X, Trash2, Settings, UserPlus, Calendar, Lock, Hash, Upload, User } from 'lucide-react';
+import { X, Trash2, Settings, UserPlus, Calendar, Lock, Hash, Upload, User, Trophy } from 'lucide-react';
 
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
   candidates: Candidate[];
   currentStatus: VotingStatus;
+  winnerId: string;
 }
 
 const DEFAULT_AVATAR = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&skinColor=614335&topType=shortHair&hairColor=2c1b18";
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, currentStatus }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, currentStatus, winnerId }) => {
   const [newName, setNewName] = useState('');
   const [newBio, setNewBio] = useState('');
   const [newImageBase64, setNewImageBase64] = useState<string | null>(null);
@@ -49,6 +50,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
 
   const handleStatusChange = (status: VotingStatus) => {
     update(ref(db, 'settings'), { status });
+  };
+
+  const handleWinnerChange = (id: string) => {
+    update(ref(db, 'settings'), { winnerId: id });
   };
 
   const handleManualTotalChange = (e: React.FormEvent) => {
@@ -105,7 +110,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
         updates[`candidates/${c.id}/votes`] = 0;
       });
       update(ref(db), updates);
-      update(ref(db, 'settings'), { manualTotal: 0 });
+      update(ref(db, 'settings'), { manualTotal: 0, winnerId: null });
     }
   };
 
@@ -180,11 +185,39 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
 
             <GlassContainer className="space-y-6">
               <h3 className="text-xl font-bold flex items-center gap-2">
+                <Trophy className="text-yellow-400" size={20} />
+                Cusboonaysii Guulaystaha
+              </h3>
+              <div className="space-y-4">
+                <p className="text-xs text-gray-500">Dooro musharaxa ku guulaystay tartanka si loogu dhawaaqo.</p>
+                <select 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white focus:border-[#00f2ff] outline-none appearance-none cursor-pointer"
+                  value={winnerId}
+                  onChange={(e) => handleWinnerChange(e.target.value)}
+                >
+                  <option value="" className="bg-[#0f172a]">-- Dooro Guulaystaha --</option>
+                  {candidates.map(c => (
+                    <option key={c.id} value={c.id} className="bg-[#0f172a]">{c.name}</option>
+                  ))}
+                </select>
+                {winnerId && (
+                  <button 
+                    onClick={() => handleWinnerChange('')}
+                    className="text-xs text-red-500 font-bold uppercase tracking-widest hover:underline"
+                  >
+                    Ka saar Guulaystaha
+                  </button>
+                )}
+              </div>
+            </GlassContainer>
+
+            <GlassContainer className="space-y-6">
+              <h3 className="text-xl font-bold flex items-center gap-2">
                 <Hash className="text-[#00f2ff]" size={20} />
-                Tirada dadka codeeyay
+                Base Votes
               </h3>
               <form onSubmit={handleManualTotalChange} className="space-y-4">
-                <p className="text-xs text-gray-500 mb-2">Halkan waxaad ka bedeli kartaa tirada guud ee lagu soo bandhigayo bogga hore (Base Votes).</p>
+                <p className="text-xs text-gray-500">Halkan waxaad ka bedeli kartaa tirada guud ee lagu soo bandhigayo bogga hore.</p>
                 <div className="relative">
                   <input 
                     type="number" 
