@@ -79,6 +79,7 @@ const App: React.FC = () => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
+        // Sort by timestamp descending
         setActivities(list.sort((a, b) => b.timestamp - a.timestamp));
       } else {
         setActivities([]);
@@ -129,17 +130,16 @@ const App: React.FC = () => {
     const phoneKey = whatsapp.replace(/\D/g, '');
     const normalizedName = name.toLowerCase().trim();
     
-    if (votedNumbers.has(phoneKey)) {
-      alert("Nambarkan WhatsApp-ka ayaa horay u codeeyay!");
+    // Safety check again before DB operation
+    if (votedNumbers.has(phoneKey) || votedNames.has(normalizedName)) {
+      alert("Codkan waa la diiday: Magaca ama lambarka ayaa horay loo isticmaalay.");
       setIsVoteModalOpen(false);
       return;
     }
 
-    if (votedNames.has(normalizedName)) {
-      alert("Magacan ayaa horay loo isticmaalay codeyn kale!");
-      setIsVoteModalOpen(false);
-      return;
-    }
+    // Extract and format the actual first name
+    const firstNameRaw = name.trim().split(/\s+/)[0];
+    const formattedFirstName = firstNameRaw.charAt(0).toUpperCase() + firstNameRaw.slice(1).toLowerCase();
 
     const updates: any = {};
     updates[`voters/${phoneKey}`] = { name, timestamp: Date.now(), candidateId: selectedCandidate?.id };
@@ -148,7 +148,7 @@ const App: React.FC = () => {
     const activityRef = push(ref(db, 'activities'));
     updates[`activities/${activityRef.key}`] = {
       id: activityRef.key,
-      userName: name.split(' ')[0],
+      userName: formattedFirstName, // Only actual first name
       candidateName: selectedCandidate?.name || 'Musharax',
       timestamp: Date.now()
     };
