@@ -26,7 +26,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
   useEffect(() => {
     if (isAuthenticated) {
       const settingsRef = ref(db, 'settings');
-      const unsubscribe = onValue(settingsRef, (snapshot) => {
+      const unsubscribe = onValue(settingsRef, (snapshot: any) => {
         const data = snapshot.val();
         if (data && data.manualTotal !== undefined) {
           setManualTotal(data.manualTotal);
@@ -88,7 +88,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
     setNewName('');
     setNewBio('');
     setNewImageBase64(null);
-    // Reset file input manually if needed via ref, but state reset is enough for UI
   };
 
   const handleDeleteCandidate = (id: string) => {
@@ -113,7 +112,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, candidates, cu
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-        <GlassContainer className="w-full max-w-sm p-10 text-center border-[#00f2ff]/30">
+        <GlassContainer className="w-full max-sm p-10 text-center border-[#00f2ff]/30">
           <div className="w-16 h-16 rounded-2xl bg-[#00f2ff]/10 flex items-center justify-center mx-auto mb-6 text-[#00f2ff]">
             <Lock size={32} />
           </div>

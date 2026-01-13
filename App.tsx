@@ -41,7 +41,7 @@ const App: React.FC = () => {
   useEffect(() => {
     // 1. Sync Candidates
     const candidatesRef = ref(db, 'candidates');
-    const unsubCandidates = onValue(candidatesRef, (snapshot) => {
+    const unsubCandidates = onValue(candidatesRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Candidate[];
@@ -53,7 +53,7 @@ const App: React.FC = () => {
 
     // 2. Sync Settings (Status & Manual Total)
     const settingsRef = ref(db, 'settings');
-    const unsubSettings = onValue(settingsRef, (snapshot) => {
+    const unsubSettings = onValue(settingsRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
         if (data.status) setVotingStatus(data.status);
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
     // 3. Sync Activities
     const activitiesRef = ref(db, 'activities');
-    const unsubActivities = onValue(activitiesRef, (snapshot) => {
+    const unsubActivities = onValue(activitiesRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.values(data) as Activity[];
@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
     // 4. Sync Voted Numbers
     const votersRef = ref(db, 'voters');
-    const unsubVoters = onValue(votersRef, (snapshot) => {
+    const unsubVoters = onValue(votersRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
         setVotedNumbers(new Set(Object.keys(data)));
